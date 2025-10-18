@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="title">Quick Notes</div>
+      <div>
+        <button class="add_btn" id="addnote_btn">+ Add Note</button>
+        <button id="theme_btn" class="theme_btn">
+          <div class="icon-light">🌙</div>
+          <div class="icon-dark">☀️</div>
+        </button>
+      </div>
+    </header>
+    <main id="note_container" class="note_grid">
+      <div class="note_state">
+        <h2>No notes yet</h2>
+        <p>Create your first note to get started!</p>
+        <button class="add_btn" id="add_btn">+ Add Your First Note</button>
+      </div>
+
+      <dialog id="noteDialog">
+        <form id="noteForm">
+          <div class="dialog_header">
+            <div>Add New Note</div>
+            <button class="close_btn" id="close_btn" type="button">×</button>
+          </div>
+
+          <div class="dialog_body">
+            <div class="dialog_input">
+              <label for="title">Title</label>
+              <input type="text" id="title" name="title" required />
+            </div>
+            <div class="dialog_input">
+              <label for="content">Content</label>
+              <textarea id="content" name="content" required></textarea>
+            </div>
+          </div>
+
+          <div class="dialog_footer">
+            <button class="cancel_btn" type="button" id="cancel_btn">
+              Cancel
+            </button>
+            <button class="save_btn" type="submit" id="save_btn">
+              Save Note
+            </button>
+          </div>
+        </form>
+      </dialog>
+    </main>
+    <div id="notesContainer" class="note_grid" hidden></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
