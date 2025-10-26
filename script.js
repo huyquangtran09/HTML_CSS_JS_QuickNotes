@@ -1,3 +1,6 @@
+//create flags
+let currentNoteId = null;
+
 //Tạo tên biến cho id="theme_btn"
 const theme_btn = document.getElementById("theme_btn");
 const noteDialog = document.getElementById("noteDialog");
@@ -63,22 +66,37 @@ let notes = [];
 //tạo sự kiện submit cho form noteForm
 noteForm.addEventListener("submit", (e) => {
   e.preventDefault(); //ngăn reload trang
-  //lấy giá trị từ input
-  const title = document.getElementById("title").value;
-  const content = document.getElementById("content").value;
+  //if currentNoteId === null => create note
+  if (currentNoteId === null) {
+    const title = document.getElementById("title").value;
+    const content = document.getElementById("content").value;
 
-  //tạo đối tượng ghi chú mới
-  const newNote = {
-    id: Date.now(),
-    title: title,
-    content: content,
-  };
-  //thêm ghi chú mới vào mảng notes
-  notes.push(newNote);
-  console.log(notes); //hiển thị mảng notes trong console
+    //tạo đối tượng ghi chú mới
+    const newNote = {
+      id: Date.now(),
+      title: title,
+      content: content,
+    };
+    //thêm ghi chú mới vào mảng notes
+    notes.push(newNote);
+    console.log(notes); //hiển thị mảng notes trong console
 
-  // lưu trữ mảng notes vào localStorage
-  localStorage.setItem("notes", JSON.stringify(notes));
+    // lưu trữ mảng notes vào localStorage
+    localStorage.setItem("notes", JSON.stringify(notes));
+  }
+  //if currentNoteId !== null => update note
+  if (currentNoteId !== null) {
+    const title = document.getElementById("title").value;
+    const content = document.getElementById("content").value;
+    //tìm ghi chú cần chỉnh sửa
+    const noteToEdit = notes.find((item) => item.id === currentNoteId);
+    noteToEdit.title = title;
+    noteToEdit.content = content;
+    //save lại mảng notes vào localStorage
+    localStorage.setItem("notes", JSON.stringify(notes));
+    //reset currentNoteId về null
+    currentNoteId = null;
+  }
 
   //đóng dialog và đặt lại form
   noteDialog.close();
@@ -115,8 +133,16 @@ function renderNotes() {
     <p>${note.content}</p>
     </div>
       <div class="note_actions">
-        <button onclick="editNote(${note.id})" class="edit_btn">✏️</button>
-        <button onclick="deleteNote(${note.id})" class="delete_btn">🗑️</button>
+        <button onclick="editNote(${note.id})" class="edit_btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"></path>
+          </svg>
+        </button>
+        <button onclick="deleteNote(${note.id})" class="delete_btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M18.3 5.71c-.39-.39-1.02-.39-1.41 0L12 10.59 7.11 5.7c-.39-.39-1.02-.39-1.41 0-.39.39-.39 1.02 0 1.41L10.59 12 5.7 16.89c-.39.39-.39 1.02 0 1.41.39.39 1.02.39 1.41 0L12 13.41l4.89 4.88c.39.39 1.02.39 1.41 0 .39-.39.39-1.02 0-1.41L13.41 12l4.89-4.89c.38-.38.38-1.02 0-1.4z"></path>
+          </svg>
+        </button>
       </div>
     `;
     notesContainer.appendChild(noteEl);
@@ -131,28 +157,14 @@ function deleteNote(id) {
 }
 
 //chỉnh sửa ghi chú
-function editNote(id, updatedContent) {
-  debugger;
-  const note = notes.find((note) => note.id === id);
-  noteDialog.showModal();
-  //sửa nội dung ghi chú
-  document.getElementById("title").value = note.title;
-  document.getElementById("content").value = note.content;
+function editNote(id) {
+  noteDialog.show();
 
-  //thay đổi tiêu đề dialog
-  const titleDialog = document.querySelector("dialog_header div");
-  titleDialog.textContent = "Chỉnh sửa ghi chú";
-
-  //thay đổi nút lưu
-  const saveButton = noteDialog.querySelector("#addnote_btn");
-  saveButton.textContent = "Lưu";
-
-  //đóng dialog và đặt lại form
-  noteDialog.close();
-  noteForm.reset();
-  //hiển thị dialog add note với nội dung hiện tại
-  document.body.appendChild(editDialog);
-  editDialog.showModal();
+  //fill data
+  const noteToEdit = notes.find((item) => item.id === id);
+  document.getElementById("title").value = noteToEdit.title;
+  document.getElementById("content").value = noteToEdit.content;
+  currentNoteId = id;
 }
 
 //khi bấm lưu, trang sẽ tải lại ghi chú từ localStorage
